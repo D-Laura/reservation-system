@@ -1,0 +1,67 @@
+﻿@model Register
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <img src="/images/login.png" />
+    <h1>Registrácia</h1>
+</div>
+@using (Html.BeginForm("RegisterPost", "Account"))
+{
+    <div class="mt-md-3">
+        <!-- Alerts to show after some action. -->
+        @if (ViewBag.NameUsed == true)
+        {
+            <div class="alert alert-warning">
+                Užívateľký email je už použitý.
+            </div>
+        }
+        @if (ViewBag.InvalidBirthNumber == true)
+        {
+            <div class="alert alert-warning">
+                Zlé alebo neexistujúce rodné číslo.
+            </div>
+        }
+        @if (ViewData.ModelState[string.Empty] != null && !string.IsNullOrEmpty(ViewData.ModelState[string.Empty].ToString()))
+        {
+            <div class="alert alert-warning">
+                @ViewData.ModelState[string.Empty]
+            </div>
+        }
+        <!-- Form items -->
+        <div class="form-group mt-2">
+            @Html.LabelFor(m => m.FirstName)
+            @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.FirstName, "", new {@class = "text-danger"})
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(m => m.LastName)
+            @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.LastName, "", new {@class = "text-danger"})
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(m => m.BirthNumber)
+            @Html.TextBoxFor(m => m.BirthNumber, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.BirthNumber, "", new {@class = "text-danger"})
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.Email, "", new {@class = "text-danger"})
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.Password, "", new {@class = "text-danger"})
+        </div>
+        <div class="text-center mt-2">
+            <button type="submit" value="Submit" class="btn btn-primary">Registrovať sa</button>
+        </div>
+    </div>
+}
+<div class="mt-2">
+    <a class="nav-link text-center text-primary text-decoration-underline" asp-controller="Account" asp-action="Login">
+        Prihlásiť sa
+    </a>
+</div>

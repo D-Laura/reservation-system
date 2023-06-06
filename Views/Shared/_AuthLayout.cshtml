@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using ReservationSystem.Data
+@using ReservationSystem.Identity.Models
+@using ReservationSystem.Services
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@inject ReservationContext _context;
+@{
+    ViewBag.Context = _context as ReservationContext;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ReservationSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ReservationSystem.styles.css" asp-append-version="true" />
+</head>
+
+<header>
+    <nav class="navbar navbar-dark sticky-top bg-primary d-flex justify-content-end">
+        <div class="d-flex justify-content-end align-items-center flex-nowrap text-white">
+            <div class="d-flex justify-content-center mx-2">
+                <img src="/images/avatar2.png" width="60" class="rounded-circle mr-1" />
+            </div>
+            <div class="d-flex flex-column justify-content-center mx-2">
+                @{
+                    var current = ViewContext.RouteData.Values["Action"];
+                }
+                @if(current.Equals("Admin")) {
+                    <div name="userType">Admin:</div>
+                }
+                @if(current.Equals("Doctor")) {
+                    <div name="userType">Doctor:</div>
+                }
+                @if (current.Equals("Patient") || current.Equals("Index"))
+                {
+                    <div name="userType">Patient:</div>
+                    <div name="nextAppointment">Nasledujúca návšteva:</div>
+                }
+            </div>
+            @{
+                var person = @_context.Users.Where(user => user.UserName == @UserManager.GetUserAsync(User).Result.UserName).Include(x => x.Person).FirstOrDefault().Person;
+                var closestReservation = @_context.People.Where(p => p.BirthNumber == person.BirthNumber).Include(x => x.PatientReservations).FirstOrDefault().PatientReservations.OrderBy(x => x.Date).Where(x => x.Date > DateTime.Now).FirstOrDefault();
+            }
+            <div class="d-flex flex-column justify-content-center align-items-center mx-2">
+                <div name="userName">@person.Name @person.Surname</div>
+                @if (current.Equals("Patient") || current.Equals("Index")) {
+                    if (closestReservation != null) {
+                        <div class="text-white" name="nextAppointmentDate">@closestReservation.Date.ToString("hh:mm dd.MM.yyyy")</div>
+                    } else {
+                        <div class="text-primary">----------</div>
+                    }
+                }
+            </div>
+            <div class="d-flex flex-column justify-content-center mx-2">
+                <button type="button" class="btn btn-outline-primary border-0 text-white align-self-start" onclick="location.href='@Url.Action("Logout", "Account")'">Odhlásiť sa</button>
+                @if (current.Equals("Patient") || current.Equals("Index"))
+                {
+                    if (closestReservation != null) {
+                        <a class="btn btn btn-primary btn-outline-primary border-0 text-white" asp-route="screencancelpatient">Zrušiť</a>
+                    } else {
+                        <div class="text-primary">------</div>
+                    }
+                }
+            </div>
+        </div>
+    </nav>
+</header>
+
+<body>
+    @RenderBody()
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

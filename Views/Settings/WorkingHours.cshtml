@@ -1,0 +1,45 @@
+﻿@model WorkingHours
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <img src="/images/doctor_icon.png" width="180" height="180" />
+    <h2>Nastavenie pracovnej doby</h2>
+</div>
+@using (Html.BeginForm("WorkingHoursPost", "Settings"))
+{
+    <div class="mt-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.WorkFrom)
+            @Html.TextBoxFor(model => model.WorkFrom, new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.WorkFrom, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(model => model.WorkTo)
+            @Html.TextBoxFor(model => model.WorkTo, new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.WorkFrom, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.BreakFrom)
+            @Html.TextBoxFor(model => model.BreakFrom, new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.WorkFrom, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(model => model.BreakTo)
+            @Html.TextBoxFor(model => model.BreakTo, new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.WorkFrom, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group mt-2">
+            @Html.LabelFor(model => model.VisitLength)
+            @Html.TextBoxFor(model => model.VisitLength, new { @class = "form-control", type = "number" })
+            @Html.ValidationMessageFor(m => m.WorkFrom, "", new { @class = "text-danger" })
+        </div>
+        <div class="text-center mt-2">
+            <button type="submit" value="Submit" class="btn btn-primary">Pokračovať</button>
+        </div>
+    </div>
+}
+<div class="mt-2">
+    <a class="nav-link text-center text-primary text-decoration-underline" asp-controller="Account" asp-action="Login">Späť</a>
+</div>

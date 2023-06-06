@@ -1,0 +1,35 @@
+﻿@model Reservation
+@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="container">
+            <div class="row justify-content-md-center mt-md-3">
+                <div class="col col-md-5">
+                    <div class="text-center">
+                        <h1>Objednať sa</h1>
+                    </div>
+                    @using (Html.BeginForm("BookPost", "Book"))
+                    {
+                        <div class="mt-md-3">
+                            <div class="form-group">
+                                @Html.Hidden("Date", Model.Date)
+                                @Html.Hidden("Length", Model.Length)
+                                @Html.Hidden("DoctorNumber", Model.DoctorNumber)
+                                @Html.Hidden("PatientNumber", Model.PatientNumber)
+                                @Html.LabelFor(model => model.Reason)
+                                @Html.TextBoxFor(model => model.Reason, new { @class = "form-control", type = "text" })
+                                @Html.ValidationMessageFor(m => m.Reason, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="text-center mt-2">
+                                <button type="submit" value="Submit" class="btn btn-primary">Objednať sa</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

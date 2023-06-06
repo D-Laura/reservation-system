@@ -1,0 +1,72 @@
+﻿@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container">
+    <div class="row row-md-1">
+        <div class="col col-md-3 mt-2">
+            @using (Html.BeginForm("Patient", "Screen", FormMethod.Get, new { id = "change-date" }))
+            {
+                <label for="exampleInputDay1">Vyberte deň:</label>
+                <input type="date" class="form-control" id="day" min="@DateTime.Today.ToString("yyyy-MM-dd")" name="date" value="@(((DateTime)ViewData["date"]).ToString("yyyy-MM-dd"))">
+            }
+        </div>
+    </div>
+
+    <table class="table table-primary table-striped-columns table-bordered border-primary text-center mt-2">
+        <thead>
+            <tr>
+                @foreach (var day in ViewData["Days"] as List<DateTime>)
+                {
+                    <th class="text-info">@day.ToString("dd.MM.yyyy")</th>
+                }
+            </tr>
+        </thead>
+        <tbody class="align-middle">
+            @{
+                List<TimeSpan> slots = ViewData["TimeSlots"] as List<TimeSpan>;
+                int numOfSLots = (int)ViewData["NumOfSlots"];
+                List<List<Reservation>> reservations = ViewData["Reserved"] as List<List<Reservation>>;
+                List<DateTime> days = ViewData["Days"] as List<DateTime>;
+                @for (int i = 0; i < numOfSLots; i++)
+                {
+                    List<Reservation> reservationsPerSlot = reservations[i];
+                    TimeSpan slot = slots[i];
+                    TimeSpan slotTo = slot.Add((TimeSpan)ViewData["Length"]);
+                    <tr>
+                        @for (int d = 0; d < 5; d++)
+                        {
+                            var parms = new Dictionary<string, string>
+                            {
+                                { "day", days[d].ToString() },
+                                { "slot", slot.ToString() }
+                            };
+                            Reservation reservation = reservationsPerSlot[d];
+                            @if (days[d].DayOfWeek == DayOfWeek.Saturday || days[d].DayOfWeek == DayOfWeek.Sunday) {
+                                <td></td>
+                                continue;
+                            }
+                            @if (reservation == null && days[d].Day == @DateTime.Now.Day && days[d].Month == @DateTime.Now.Month && days[d].Year == @DateTime.Now.Year && (slot.Hours < @DateTime.Now.Hour || (slot.Hours < @DateTime.Now.Hour && slot.Minutes <= @DateTime.Now.Minute)))
+                            {
+                                <td></td>
+                                continue;
+                            }
+                            @if (reservation == null)
+                            {
+                                <td><a class="btn btn-primary btn-lg" role="button" asp-route="bookindex" asp-all-route-data="parms">@slot.ToString("hh\\:mm")-@slotTo.ToString("hh\\:mm")</a></td>
+                                continue;
+                            }
+                            <td></td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.querySelector("#day").addEventListener("change", (e) => {
+        document.querySelector("#change-date").submit();
+    });
+</script>
