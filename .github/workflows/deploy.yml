@@ -1,0 +1,49 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: hw2-app
+  AZURE_RESOURCE_GROUP: hw2-reservation-system-rg
+  AZURE_STORAGE_ACCOUNT: hw27t3ii
+  AZURE_STATIC_CONTAINER: static
+  DOTNET_VERSION: 6.0.x
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ReservationSystem.csproj
+
+      - name: Publish
+        run: dotnet publish ReservationSystem.csproj --configuration Release --output ./publish --no-restore
+
+      - name: Upload static assets to Blob Storage
+        run: |
+          az storage blob upload-batch \
+            --account-name "$AZURE_STORAGE_ACCOUNT" \
+            --destination "$AZURE_STATIC_CONTAINER" \
+            --source ./publish/wwwroot \
+            --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+            --overwrite
+
+      - name: Deploy web app
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish

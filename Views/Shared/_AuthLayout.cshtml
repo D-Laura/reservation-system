@@ -18,16 +18,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ReservationSystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ReservationSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="@StaticAssets.Url("lib/bootstrap/dist/css/bootstrap.min.css")" />
+    <link rel="stylesheet" href="@StaticAssets.Url("css/site.css")" />
+    <link rel="stylesheet" href="@StaticAssets.Url("ReservationSystem.styles.css")" />
 </head>
 
 <header>
     <nav class="navbar navbar-dark sticky-top bg-primary d-flex justify-content-end">
         <div class="d-flex justify-content-end align-items-center flex-nowrap text-white">
             <div class="d-flex justify-content-center mx-2">
-                <img src="/images/avatar2.png" width="60" class="rounded-circle mr-1" />
+                <img src="@StaticAssets.Url("images/avatar2.png")" width="60" class="rounded-circle mr-1" />
             </div>
             <div class="d-flex flex-column justify-content-center mx-2">
                 @{
@@ -77,9 +77,9 @@
 <body>
     @RenderBody()
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="@StaticAssets.Url("lib/jquery/dist/jquery.min.js")"></script>
+    <script src="@StaticAssets.Url("lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+    <script src="@StaticAssets.Url("js/site.js")"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -26,6 +26,7 @@ builder.Services.AddScoped<ReservationContext>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddSingleton<IStaticAssetUrlBuilder, StaticAssetUrlBuilder>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
